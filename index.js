@@ -18,7 +18,7 @@ const User = mongoose.model('User', userSchema);
 
 async function createUser(){
 	const user = new User({
-		email: 'sample2@test.com',
+		email: 'sample1@test.com',
 		password: 12345678,
 		currency: 'BDT'
 	})
@@ -27,7 +27,17 @@ async function createUser(){
 	console.log(result);
 }
 
-createUser();
+async function getUser(){
+	const users = await User
+		.find({ email: 'sample1@test.com', password: 12345678 })
+		.limit(1)
+		.select({ currency: 1 });
+
+	console.log(users);
+}
+
+// createUser();
+getUser();
 
 const logger = require('./middleware/logger');
 const auth = require('./middleware/auth')
