@@ -3,6 +3,6 @@ const router = express.Router();
 
 //GET
 router.get('/', (req, res) => {
-	res.send('Welcome to coin daily api.');
+	res.render('index', { title: 'Coin Daily Api', message: 'WELCOME TO COIN DAILY API' });
 });
 module.exports = router;

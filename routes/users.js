@@ -1,61 +1,74 @@
 const express = require('express');
 const router = express.Router();
-
-const users = [
-	{id: 1, name: 'Nabil Ahmad'},
-	{id: 2, name: 'Nabil Ahmad 2'},
-	{id: 3, name: 'Nabil Ahmad 3'}
-]
+const { User, validate } = require('../models/user');
 
 //GET
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+	const users = await User.find().sort('_id');
 	res.send(users);
 });
-router.get('/:id', (req, res) => {
-	const user = users.find(c => c.id === parseInt(req.param.id));
+
+router.get('/:id', async (req, res) => {
+	const user = await User
+		.find({ email: req.param.email, password: req.param.pasword })
+		.limit(1)
+		.select({ currency: 1 });
+
 	if(!user) return res.status(404).send('Invalid Id. Not Found!');
 	res.send(user);
 });
 
 //POST
-router.post('/', (req, res) => {	
-	const { error } = validateuser(req.body);
+router.post('/', async (req, res) => {	
+	const { error } = validate(req.body);
 	if(error) return res.status(400).send(error.details[0].message);
 	
-	const user = {
-		id: users.length + 1,
-		name: req.body.name
+	const user = new User({
+		email: req.body.email,
+		password: req.body.password,
+		currency: req.body.currency
+	})
+
+	try{
+		const result = await user.save();
+		res.send(result);
+	}
+	catch(exception){
+		console.log(exception.message);
+		for (err in exception.errors)
+			console.log(exception.errors[err].message);
 	}
 
-	users.push(user);
-	res.send(user);
 });
 
 //PUT
-router.put('/:id', (req, res) => {
-	const user = users.find(c => c.id === parseInt(req.param.id));
+router.put('/:id', async (req, res) => {
+
+	const { error } = validate(req.body);
+	if(error) return res.status(400).send(error.details[0].message);
+
+	const user = await User.findById(parseInt(req.param.id))
 	if(!user){
 		return res.status(404).send('Invalid Id. Not Found!');
 	}
+	
+	user.set({
+		email: req.body.email,
+		currency: req.body.currency
+	});
 
-	const { error } = validateuser(req.body);
-	if(error) return res.status(400).send(error.details[0].message);
-		
-
-	user.name = req.body.name;
-	res.send(user);
+	const result = await user.save();
+	res.send(result);
 
 });
 
 //DELETE
-router.delete('/:id', (req, res) => {
-	const user = users.find(c => c.id === parseInt(req.param.id));
+router.delete('/:id', async (req, res) => {
+	const user = await User.findById(parseInt(req.param.id))
 	if(!user) return res.status(404).send('Invalid Id. Not Found!');
 
-	const index = users.indexOf(user);
-	users.splice(index, 1);
-
-	res.send(user);
+	const result = await User.deleteOne({ _id: id });
+	res.send(result);
 
 });
 
