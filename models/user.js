@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
 	email: { 
 		type: String, 
 		required: true, 
-		index: { unique: true },
+		index: true,
+		unique: true,
 		minLength: 5,
 		maxLength: 255,
 		match: /.*@.*/,
@@ -19,8 +20,10 @@ const userSchema = new mongoose.Schema({
 		type: Date, 
 		default: Date.now 
 	},
+	access_token: { type: String },
 	currency: String
 });
+userSchema.index({ email: 1 }, { unique: true});
 
 const User = mongoose.model('User', userSchema);
 
@@ -29,6 +32,7 @@ const User = mongoose.model('User', userSchema);
 function validateUser(user){
 	const schema = Joi.object().keys({
 		email: Joi.string().email({ minDomainAtoms: 2 }).required(),
+		access_token: [Joi.string(), Joi.number()],
 		password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
 		currency: Joi.string()
 	});
