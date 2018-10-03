@@ -2,73 +2,123 @@ const express = require('express');
 const router = express.Router();
 const { User, validate } = require('../models/user');
 
-//GET
+// get all users
 router.get('/', async (req, res) => {
 	const users = await User.find().sort('_id');
-	res.send(users);
+	res.status(200).send(users);
 });
 
-router.get('/:id', async (req, res) => {
-	const user = await User
-		.find({ email: req.param.email, password: req.param.pasword })
-		.limit(1)
-		.select({ currency: 1 });
-
-	if(!user) return res.status(404).send('Invalid Id. Not Found!');
-	res.send(user);
-});
-
-//POST
-router.post('/', async (req, res) => {	
-	const { error } = validate(req.body);
-	if(error) return res.status(400).send(error.details[0].message);
-	
-	const user = new User({
-		email: req.body.email,
-		password: req.body.password,
-		currency: req.body.currency
-	})
-
+// login
+router.post('/login', async (req, res) => {
 	try{
-		const result = await user.save();
-		res.send(result);
+		const { error } = validate(req.body);
+		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
+		
+		const user = await User
+			.find({ email: req.body.email })
+			.limit(1);
+
+		if(!user || user.length < 1) return res.status(404).send({status: 404, success: false, message: 'Invalid Username or Password!'});
+		res.status(200).json({ status: 200, msg: 'success' });
 	}
 	catch(exception){
-		console.log(exception.message);
-		for (err in exception.errors)
-			console.log(exception.errors[err].message);
+		if(exception) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+	}
+});
+
+// GET user currency
+router.post('/get-currency', async (req, res) => {
+	try{
+		const { error } = validate(req.body);
+		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
+		
+		const currency = await User
+			.find({ email: req.body.email })
+			.limit(1)
+			.select({ currency: 1 });
+
+		if(!currency || currency.length < 1) return res.status(404).send({status: 404, success: false, message: 'Invalid User!'});
+		res.status(200).json(currency);
+	}
+	catch(exception){
+		if(exception) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+	}
+});
+
+// CREATE new user
+router.post('/', async (req, res) => {	
+	try{	
+		const { error } = validate(req.body);
+		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
+		
+		const user = new User({
+			email: req.body.email,
+			password: req.body.password,
+			currency: req.body.currency
+		})
+
+		const result = await user.save();
+		res.status(200).json({ status: 200, success: true });
+	}
+	catch(exception){
+		if(exception){
+			if(exception.name === 'MongoError' && exception.code === 11000){
+				res.status(400).send({status: 400, success: false, message: 'User already exists'});
+			}
+			return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'})
+		}
+		
 	}
 
 });
 
-//PUT
+// UPDATE user
 router.put('/:id', async (req, res) => {
 
-	const { error } = validate(req.body);
-	if(error) return res.status(400).send(error.details[0].message);
+	try{
+		const { error } = validate(req.body);
+		if(error) return res.status(400).send({status: 400, success: false, message: error.details[0].message});
 
-	const user = await User.findById(parseInt(req.param.id))
-	if(!user){
-		return res.status(404).send('Invalid Id. Not Found!');
+		const user = await User.findById(req.params.id)
+		if(!user) return res.status(404).send({status: 404, success: false, message: 'Invalid Id. Not Found!'});
+		
+		user.set({
+			email: req.body.email,
+			currency: req.body.currency
+		});
+
+		const result = await user.save();
+		res.status(200).json({ status: 200, success: true });
 	}
-	
-	user.set({
-		email: req.body.email,
-		currency: req.body.currency
-	});
-
-	const result = await user.save();
-	res.send(result);
+	catch(exception){
+		if(exception){
+			if(exception.name === 'MongoError' && exception.code === 11000){
+				res.status(400).send({status: 400, success: false, message: 'User already exists'});
+			}
+			return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'})
+		}
+	}
 
 });
 
-//DELETE
+// DELETE user
 router.delete('/:id', async (req, res) => {
-	const user = await User.findById(parseInt(req.param.id))
-	if(!user) return res.status(404).send('Invalid Id. Not Found!');
+	try{
+		const result = await User.findOneAndRemove({ _id: req.params.id })
+								 .exec(function(err, item) {
+							        if (err) {
+							            return res.status(404).json({status: 404, success: false, msg: 'Cannot remove item'});
+							        }       
+							        if (!item) {
+							            return res.status(404).json({status: 404, success: false, msg: 'User not found'});
+							        }  
+							        res.status(200).json({status: 200, success: true, msg: 'User deleted.'});
+							     });
 
-	const result = await User.deleteOne({ _id: id });
-	res.send(result);
+	}
+	catch(exception){
+		if(exception) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+	}
 
 });
 

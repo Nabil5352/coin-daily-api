@@ -1,12 +1,11 @@
 const express = require('express');
 const helmet = require('helmet');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose').set('debug', true);
 
 mongoose.connect('mongodb://localhost/playground', { useNewUrlParser: true })
 		.then(() => console.log('Connected to MongoDB'))
 		.catch(err => console.log("Could not connect to MongoDB", err));
 
-const logger = require('./middleware/logger');
 const auth = require('./middleware/auth')
 
 const home = require('./routes/home');
@@ -19,6 +18,7 @@ app.listen(port, () => {
 	console.log(`Listening on ${port}`);
 });
 
+//view engine
 app.set('view engine', 'pug');
 app.set('views', './views');
 
@@ -27,7 +27,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
 app.use(helmet());
-app.use(logger);
 app.use(auth);
 
 //route

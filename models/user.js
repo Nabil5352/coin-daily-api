@@ -27,9 +27,12 @@ const User = mongoose.model('User', userSchema);
 
 
 function validateUser(user){
-	const schema = {
-		name: Joi.string().min(3).required()
-	};
+	const schema = Joi.object().keys({
+		email: Joi.string().email({ minDomainAtoms: 2 }).required(),
+		password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+		currency: Joi.string()
+	});
+
 	return Joi.validate(user, schema);
 }
 
