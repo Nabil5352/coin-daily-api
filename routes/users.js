@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { User, validate } = require('../models/user');
 
-// get all users
+// GET all users
 router.get('/', async (req, res) => {
 	const users = await User.find().sort('_id');
 	res.status(200).send(users);
