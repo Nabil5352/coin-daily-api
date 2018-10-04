@@ -1,22 +1,25 @@
 const express = require('express');
 const helmet = require('helmet');
-const mongoose = require('mongoose').set('debug', true);
-
-mongoose.connect('mongodb://localhost/playground', { useNewUrlParser: true })
-		.then(() => console.log('Connected to MongoDB'))
-		.catch(err => console.log("Could not connect to MongoDB", err));
-
-const auth = require('./middleware/auth')
-
+const auth = require('./middleware/auth');
+//routes
 const home = require('./routes/home');
 const users = require('./routes/users');
+const mongoose = require('mongoose').set('debug', true);
 
 const app = express();
 const port = process.env.PORT || 4000;
-
 app.listen(port, () => {
 	console.log(`Listening on ${port}`);
 });
+
+if(!process.env.CDA_JWT_TOKEN){
+	console.log('Set initial environment variables');
+	process.exit(1);
+}
+
+mongoose.connect('mongodb://localhost/playground', { useNewUrlParser: true })
+		.then(() => console.log('Connected....'))
+		.catch(err => console.log("Could not connect to database"));
 
 //view engine
 app.set('view engine', 'pug');

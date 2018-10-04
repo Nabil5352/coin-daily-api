@@ -14,9 +14,12 @@
   "author": "Nabil Ahmad",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.1",
     "express": "^4.16.3",
     "helmet": "^3.13.0",
     "joi": "^13.6.0",
+    "joi-objectid": "^2.0.0",
+    "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.17",
     "pug": "^2.0.3"
   },

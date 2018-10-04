@@ -1,4 +1,5 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -14,7 +15,9 @@ const userSchema = new mongoose.Schema({
 	},
 	password: { 
 		type: String, 
-		required: true 
+		required: true,
+		minLength: 5,
+		maxLength: 1024
 	},
 	last_logged_in: { 
 		type: Date, 
@@ -31,9 +34,10 @@ const User = mongoose.model('User', userSchema);
 
 function validateUser(user){
 	const schema = Joi.object().keys({
-		email: Joi.string().email({ minDomainAtoms: 2 }).required(),
+		id: Joi.objectId(),
+		email: Joi.string().email({ minDomainAtoms: 2 }).min(5).max(255).required(),
 		access_token: [Joi.string(), Joi.number()],
-		password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+		password: Joi.string().min(5).max(255).regex(/^[a-zA-Z0-9]{3,30}$/),
 		currency: Joi.string()
 	});
 

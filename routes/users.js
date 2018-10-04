@@ -1,4 +1,6 @@
 const express = require('express');
+const crypt = require('../helper/hash');
+const jwt = require('../helper/jwt');
 const router = express.Router();
 const { User, validate } = require('../models/user');
 
@@ -15,11 +17,14 @@ router.post('/login', async (req, res) => {
 		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
 		
 		const user = await User
-			.find({ email: req.body.email })
-			.limit(1);
-
+			.findOne({ email: req.body.email });
 		if(!user || user.length < 1) return res.status(404).send({status: 404, success: false, message: 'Invalid Username or Password!'});
-		res.status(200).json({ status: 200, msg: 'success' });
+
+		const validPass = await crypt.comparePassword(req.body.password, user.password);
+		if(!validPass) return res.status(404).send({status: 404, success: false, message: 'Invalid Username or Password!'});
+		
+		const token = await jwt.jwtToken(user.id);
+		res.status(200).send(token);
 	}
 	catch(exception){
 		if(exception) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
@@ -57,8 +62,13 @@ router.post('/', async (req, res) => {
 			currency: req.body.currency
 		})
 
-		const result = await user.save();
-		res.status(200).json({ status: 200, success: true });
+		await crypt.encryptPassword(req.body.password).then((hashedPassword)=>{
+			user.password = hashedPassword;
+		});
+
+		await user.save();
+		const token = await jwt.jwtToken(user.id);
+		res.status(200).header('x-auth-token', token).json({ status: 200, success: true });
 	}
 	catch(exception){
 		if(exception){
@@ -79,15 +89,16 @@ router.put('/:id', async (req, res) => {
 		const { error } = validate(req.body);
 		if(error) return res.status(400).send({status: 400, success: false, message: error.details[0].message});
 
-		const user = await User.findById(req.params.id)
+		const user = await User.findById(req.body.id)
 		if(!user) return res.status(404).send({status: 404, success: false, message: 'Invalid Id. Not Found!'});
 		
 		user.set({
+			id: req.body.id,
 			email: req.body.email,
 			currency: req.body.currency
 		});
 
-		const result = await user.save();
+		await user.save();
 		res.status(200).json({ status: 200, success: true });
 	}
 	catch(exception){
