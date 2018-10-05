@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const auth = require('./middleware/auth');
 //routes
-const auth = require('./routes/auth');
+const authRoute = require('./routes/auth');
 const home = require('./routes/home');
 const users = require('./routes/users');
 const mongoose = require('mongoose').set('debug', true);
@@ -35,5 +35,5 @@ app.use(auth);
 
 //route
 app.use('/api/users', users);
-app.use('/auth', auth);
+app.use('/auth', authRoute);
 app.use('/', home);
