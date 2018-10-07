@@ -1,6 +1,5 @@
 const express = require('express');
 const helmet = require('helmet');
-const auth = require('./middleware/auth');
 //routes
 const authRoute = require('./routes/auth');
 const home = require('./routes/home');
@@ -31,7 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
 app.use(helmet());
-app.use(auth);
 
 //route
 app.use('/api/users', users);

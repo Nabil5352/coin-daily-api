@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middleware/auth');
 const router = express.Router();
 const { User, validate } = require('../models/user');
 
@@ -9,7 +10,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET user currency
-router.post('/get-currency', async (req, res) => {
+router.post('/get-currency', auth, async (req, res) => {
 	try{
 		const { error } = validate(req.body);
 		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
@@ -28,7 +29,7 @@ router.post('/get-currency', async (req, res) => {
 });
 
 // UPDATE user
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 
 	try{
 		const { error } = validate(req.body);
@@ -58,7 +59,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE user
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 	try{
 		const result = await User.findOneAndRemove({ _id: req.params.id })
 								 .exec(function(err, item) {
