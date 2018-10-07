@@ -1,5 +1,7 @@
+require('express-async-errors');
 const express = require('express');
 const helmet = require('helmet');
+const error = require('./middleware/error');
 //routes
 const authRoute = require('./routes/auth');
 const home = require('./routes/home');
@@ -35,3 +37,4 @@ app.use(helmet());
 app.use('/api/users', users);
 app.use('/auth', authRoute);
 app.use('/', home);
+app.use(error);

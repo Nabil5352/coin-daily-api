@@ -3,6 +3,7 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 const { User, validate } = require('../models/user');
 
+
 // GET all users
 router.get('/', async (req, res) => {
 	const users = await User.find().sort('_id');
