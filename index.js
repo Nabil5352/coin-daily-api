@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const error = require('./middleware/error');
 //routes
 const authRoute = require('./routes/auth');
+const coindeskdata = require('./routes/coindesk');
 const home = require('./routes/home');
 const users = require('./routes/users');
 const mongoose = require('mongoose').set('debug', true);
@@ -36,5 +37,6 @@ app.use(helmet());
 //route
 app.use('/api/users', users);
 app.use('/auth', authRoute);
+app.use('/api/data', coindeskdata);
 app.use('/', home);
 app.use(error);

@@ -22,7 +22,9 @@
     "joi-objectid": "^2.0.0",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.17",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
