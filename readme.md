@@ -1,17 +1,18 @@
 # Coin Daily API
->> API for frontend [coin daily](#https://github.com/Nabil5352/coin-daily) app
+![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
+
+>> API for frontend app
 <br/><br/>
 Express Framework - Node.js
 <br/><br/>
 MongoDB
 <br/><br/>
 
-![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
+[coin daily frontend app](#https://github.com/Nabil5352/coin-daily)
 
-#### Environment variables required:
+#### Environment variables:
 ```
-NODE_ENV **(default: dev)**
-PORT **(default: 4000)**
-CDA_JWT_TOKEN **Mandatory**
-<br/>
+NODE_ENV (optional, default: dev)
+PORT (optional, default: 4000)
+CDA_JWT_TOKEN (Mandatory)
 ```
