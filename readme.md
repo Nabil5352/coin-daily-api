@@ -1,14 +1,11 @@
 # Coin Daily API
 ![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
 
->> API for frontend app
-<br/><br/>
-Express Framework - Node.js
-<br/><br/>
-MongoDB
-<br/><br/>
+- API for frontend app
+- Express Framework - Node.js
+- MongoDB
 
-[coin daily frontend app](#https://github.com/Nabil5352/coin-daily)
+Built for [coin daily frontend app](https://github.com/Nabil5352/coin-daily)
 
 #### Environment variables:
 ```
