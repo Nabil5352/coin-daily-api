@@ -1,5 +1,7 @@
 # Coin Daily API
-![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
+<kbd>
+	![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
+</kbd>
 
 - API for frontend app
 - Express Framework - Node.js
