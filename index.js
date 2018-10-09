@@ -7,15 +7,22 @@ const authRoute = require('./routes/auth');
 const coindeskdata = require('./routes/coindesk');
 const home = require('./routes/home');
 const users = require('./routes/users');
-const mongoose = require('mongoose').set('debug', true);
+const mongoose = require('mongoose');
+
+// Environment variables
+const env = process.env.NODE_ENV || 'dev';
+const port = process.env.PORT || 4000;
+const jwtToken = process.env.CDA_JWT_TOKEN;
 
 const app = express();
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-	console.log(`Listening on ${port}`);
-});
 
-if(!process.env.CDA_JWT_TOKEN){
+if(env === 'dev'){
+	app.listen(port, () => {
+		console.log(`Listening on ${port}`);
+	});
+}
+
+if(!jwtToken){
 	console.log('Set initial environment variables');
 	process.exit(1);
 }
