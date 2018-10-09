@@ -1,6 +1,6 @@
 # Coin Daily API
 <kbd>
-	![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
+	<img src="public/screenshot.png">
 </kbd>
 
 - API for frontend app
