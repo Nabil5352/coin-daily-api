@@ -8,12 +8,19 @@ html, body{
     font-family: 'Raleway', sans-serif;
     font-size: 14px;
 }
-h1{
-	display: table-cell;
+.center-content{
+    display: table-cell;
     vertical-align: middle;
-    text-align: center;
-    color: #4b4b4c;
     height: 100%;
+    text-align: center;
+}
+h1{
+    color: #4b4b4c;
     font-size: 3em;
     font-weight: 400;
+}
+.link a{
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #000;
 }
