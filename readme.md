@@ -2,7 +2,7 @@
 <kbd>
 	<img src="public/screenshot.png">
 </kbd>
-
+<br><br>
 - API for frontend app
 - Express Framework - Node.js
 - MongoDB
