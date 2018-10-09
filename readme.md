@@ -9,10 +9,9 @@ MongoDB
 ![Homepage-screenshot](public/screenshot.png?raw=true "Home Page")
 
 #### Environment variables required:
-<br/>
+```
 NODE_ENV **(default: dev)**
-<br/>
 PORT **(default: 4000)**
-<br/>
 CDA_JWT_TOKEN **Mandatory**
 <br/>
+```
