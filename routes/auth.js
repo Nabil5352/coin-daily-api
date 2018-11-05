@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
 		if(!validPass) return res.status(404).send({status: 404, success: false, message: 'Invalid Username or Password!'});
 		
 		const token = user.generateAuthToken();
-		res.status(200).send(token);
+		res.status(200).header('x-auth-token', token).json({ status: 200, success: true });
 	}
 	catch(exception){
 		if(exception) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
