@@ -26,8 +26,10 @@ if(!jwtToken){
 	console.log('Set initial environment variables');
 	process.exit(1);
 }
-
-mongoose.connect('mongodb://localhost/playground', { useNewUrlParser: true })
+if(!process.env.DBSTRING){
+	process.exit(1);
+}
+mongoose.connect(process.env.DBSTRING, { useNewUrlParser: true })
 		.then(() => console.log('Connected....'))
 		.catch(err => console.log("Could not connect to database"));
 
