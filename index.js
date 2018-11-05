@@ -16,11 +16,9 @@ const jwtToken = process.env.CDA_JWT_TOKEN;
 
 const app = express();
 
-if(env === 'dev'){
-	app.listen(port, () => {
-		console.log(`Listening on ${port}`);
-	});
-}
+app.listen(port, () => {
+	console.log(`Listening on ${port}`);
+});
 
 if(!jwtToken){
 	console.log('Set initial environment variables');
