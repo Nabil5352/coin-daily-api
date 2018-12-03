@@ -1,6 +1,6 @@
 {
-  "name": "coin-daily-apiv0.1",
-  "version": "1.0.0",
+  "name": "coin-daily-apiv1.1",
+  "version": "1.0.1",
   "description": "Api for coin daily frontend",
   "main": "index.js",
   "scripts": {
