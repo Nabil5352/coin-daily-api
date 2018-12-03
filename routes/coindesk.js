@@ -15,7 +15,7 @@ router.get('/currency-list', auth, async (req, res) => {
         res.status(200).send(response);
     })
     .catch(function (err) {
-        if(err) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+        if(err) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
     });
 });
 
@@ -30,7 +30,7 @@ router.get('/current', auth, async (req, res) => {
         res.status(200).send(response);
     })
     .catch(function (err) {
-        if(err) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+        if(err) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
     });
 });
 
@@ -45,7 +45,7 @@ router.post('/custom-price', auth, async (req, res) => {
         res.status(200).send(response);
     })
     .catch(function (err) {
-        if(err) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+        if(err) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
     });
 });
 
@@ -60,7 +60,7 @@ router.get('/global-history', auth, async (req, res) => {
         res.status(200).send(response);
     })
     .catch(function (err) {
-        if(err) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+        if(err) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
     });
 });
 
@@ -75,7 +75,7 @@ router.post('/custom-history', auth, async (req, res) => {
         res.status(200).send(response);
     })
     .catch(function (err) {
-        if(err) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+        if(err) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
     });
 });
 

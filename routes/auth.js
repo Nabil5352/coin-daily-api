@@ -8,7 +8,7 @@ const { User, validate } = require('../models/user');
 router.post('/signup', async (req, res) => {	
 	try{	
 		const { error } = validate(req.body);
-		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
+		if(error) return res.status(406).send({status: 406, message: error.details[0].message});
 		
 		const user = new User({
 			email: req.body.email,
@@ -22,14 +22,14 @@ router.post('/signup', async (req, res) => {
 
 		await user.save();
 		const token = user.generateAuthToken();
-		res.status(200).header('x-auth-token', token).json({ status: 200, success: true });
+		res.status(201).header('x-auth-token', token).json({ status: 201, success: true });
 	}
 	catch(exception){
 		if(exception){
 			if(exception.name === 'MongoError' && exception.code === 11000){
-				res.status(400).send({status: 400, success: false, message: 'User already exists'});
+				res.status(406).send({status: 406, success: false, message: 'Email already in use.'});
 			}
-			return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'})
+			return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'})
 		}
 		
 	}
@@ -40,27 +40,41 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
 	try{
 		const { error } = validate(req.body);
-		if(error) return res.status(400).send({status: 400, message: error.details[0].message});
+		if(error) return res.status(406).send({status: 406, message: error.details[0].message});
 		
-		const user = await User
+		let user = await User
 			.findOne({ email: req.body.email });
 		if(!user || user.length < 1) return res.status(404).send({status: 404, success: false, message: 'Invalid Username or Password!'});
 
 		const validPass = await crypt.comparePassword(req.body.password, user.password);
 		if(!validPass) return res.status(404).send({status: 404, success: false, message: 'Invalid Username or Password!'});
 		
-		const token = user.generateAuthToken();
-		res.status(200).header('x-auth-token', token).json({ status: 200, success: true });
+		if(user && validPass){
+			const token = user.generateAuthToken();
+
+			//serialize
+			let clone = {};
+			clone.email = user.email;
+			clone.currency = user.currency;
+
+			res.status(200).header('x-auth-token', token).json({ status: 200, success: true, user: clone });
+		}else{
+			res.status(401).send({status: 401, success: false, message: 'Invalid Username or Password!'});
+		}
 	}
 	catch(exception){
-		if(exception) return res.status(500).send({status: 500, success: false, message: 'An error occurred! Please try again.'});
+		if(exception) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
 	}
 });
 
 // Get current user
 router.get('/current-user', auth, async (req, res) => {
-	const user = await User.findById(req.user.id).select('-password');
-	res.send(user);
+	try{
+		const user = await User.findById(req.user.id).select('-password');
+		res.status(200).send({status: 200, success: true, user: user});
+	}catch(exception){
+		if(exception) return res.status(400).send({status: 400, success: false, message: 'An error occurred! Please try again.'});
+	}
 });
 
 module.exports = router;
